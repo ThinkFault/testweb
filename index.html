@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AppBridge OpenExternalLink Test Page</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    button {
+      margin: 10px 0;
+      padding: 12px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .log {
+      background: #f4f4f4;
+      border: 1px solid #ccc;
+      padding: 10px;
+      height: 200px;
+      overflow-y: auto;
+      white-space: pre-line;
+    }
+  </style>
+
+  <script>
+    // ================== LOGGER ==================
+    function log(msg) {
+      console.log(msg);
+      const box = document.getElementById("log-box");
+      box.textContent += msg + "\n";
+    }
+
+    // ================== Method A ==================
+    function testAppBridgePostMessage() {
+      log("Calling AppBridge.postMessage...");
+
+      try {
+        window.AppBridge.postMessage({
+          type: "openExternalLink",
+          url: "https://google.com"
+        });
+      } catch (e) {
+        log("ERROR calling AppBridge.postMessage: " + e);
+      }
+    }
+
+    // ================== Method B ==================
+    function testSendLinkToAppBridge() {
+      log("Calling sendLinkToAppBridge...");
+
+      try {
+        window.sendLinkToAppBridge("https://youtube.com");
+      } catch (e) {
+        log("ERROR calling sendLinkToAppBridge: " + e);
+      }
+    }
+
+    // ====== Provide fallback AppBridge / sendLinkToAppBridge for browsers ======
+    if (!window.AppBridge) {
+      window.AppBridge = {
+        postMessage: function(data) {
+          log("Fallback AppBridge.postMessage triggered");
+          log("Data = " + JSON.stringify(data, null, 2));
+        }
+      };
+    }
+
+    if (!window.sendLinkToAppBridge) {
+      window.sendLinkToAppBridge = function(url) {
+        log("Fallback sendLinkToAppBridge triggered: " + url);
+      };
+    }
+
+    // ================== Log ready ==================
+    document.addEventListener("DOMContentLoaded", () => {
+      log("Test page loaded");
+    });
+  </script>
+</head>
+
+<body>
+  <h1>AppBridge Test Page</h1>
+  <p>用于测试 Flutter WebView 中 openExternalLink 是否触发。</p>
+
+  <button onclick="testAppBridgePostMessage()">
+    🔥 测试方式 A：AppBridge.postMessage
+  </button>
+
+  <button onclick="testSendLinkToAppBridge()">
+    🔥 测试方式 B：sendLinkToAppBridge
+  </button>
+
+  <p>或点击下面的外链（方式 C）：</p>
+  <a href="https://apple.com" target="_blank">打开 Apple.com</a>
+
+  <h3>Console Log Output</h3>
+  <div id="log-box" class="log"></div>
+</body>
+</html>
+

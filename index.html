@@ -84,18 +84,18 @@
 
 <body>
   <h1>AppBridge Test Page</h1>
-  <p>用于测试 Flutter WebView 中 openExternalLink 是否触发。</p>
+  <p>Used to test whether openExternalLink is triggered inside Flutter WebView.</p>
 
   <button onclick="testAppBridgePostMessage()">
-    🔥 测试方式 A：AppBridge.postMessage
+    🔥 Test Method A: AppBridge.postMessage
   </button>
 
   <button onclick="testSendLinkToAppBridge()">
-    🔥 测试方式 B：sendLinkToAppBridge
+    🔥 Test Method B: sendLinkToAppBridge
   </button>
 
-  <p>或点击下面的外链（方式 C）：</p>
-  <a href="https://apple.com" target="_blank">打开 Apple.com</a>
+  <p>Or click the external link below (Method C):</p>
+  <a href="https://apple.com" target="_blank">Open Apple.com</a>
 
   <h3>Console Log Output</h3>
   <div id="log-box" class="log"></div>

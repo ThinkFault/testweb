@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>AppBridge OpenExternalLink Test Page</title>
+  <title>AppBridge Test Page</title>
 
   <style>
     body {
@@ -27,55 +27,40 @@
   </style>
 
   <script>
-    // ================== LOGGER ==================
     function log(msg) {
       console.log(msg);
       const box = document.getElementById("log-box");
       box.textContent += msg + "\n";
     }
 
-    // ================== Method A ==================
-    function testAppBridgePostMessage() {
-      log("Calling AppBridge.postMessage...");
+    // Method A: openExternalLink
+    function testOpenExternalLink() {
+      log("Triggering openExternalLink...");
 
       try {
-        window.AppBridge.postMessage({
+        window.flutter_inappwebview.callHandler("AppBridgeHandler", {
           type: "openExternalLink",
           url: "https://google.com"
         });
       } catch (e) {
-        log("ERROR calling AppBridge.postMessage: " + e);
+        log("ERROR triggering openExternalLink: " + e);
       }
     }
 
-    // ================== Method B ==================
-    function testSendLinkToAppBridge() {
-      log("Calling sendLinkToAppBridge...");
+    // Method B: notificationCountUpdate
+    function testNotificationCountUpdate() {
+      log("Triggering notificationCountUpdate...");
 
       try {
-        window.sendLinkToAppBridge("https://youtube.com");
+        window.flutter_inappwebview.callHandler("AppBridgeHandler", {
+          type: "notificationCountUpdate",
+          count: 99
+        });
       } catch (e) {
-        log("ERROR calling sendLinkToAppBridge: " + e);
+        log("ERROR triggering notificationCountUpdate: " + e);
       }
     }
 
-    // ====== Provide fallback AppBridge / sendLinkToAppBridge for browsers ======
-    if (!window.AppBridge) {
-      window.AppBridge = {
-        postMessage: function(data) {
-          log("Fallback AppBridge.postMessage triggered");
-          log("Data = " + JSON.stringify(data, null, 2));
-        }
-      };
-    }
-
-    if (!window.sendLinkToAppBridge) {
-      window.sendLinkToAppBridge = function(url) {
-        log("Fallback sendLinkToAppBridge triggered: " + url);
-      };
-    }
-
-    // ================== Log ready ==================
     document.addEventListener("DOMContentLoaded", () => {
       log("Test page loaded");
     });
@@ -84,17 +69,17 @@
 
 <body>
   <h1>AppBridge Test Page</h1>
-  <p>Used to test whether openExternalLink is triggered inside Flutter WebView.</p>
+  <p>This page is used to test AppBridgeHandler callbacks in Flutter WebView.</p>
 
-  <button onclick="testAppBridgePostMessage()">
-    🔥 Test Method A: AppBridge.postMessage
+  <button onclick="testOpenExternalLink()">
+    🔥 Test openExternalLink
   </button>
 
-  <button onclick="testSendLinkToAppBridge()">
-    🔥 Test Method B: sendLinkToAppBridge
+  <button onclick="testNotificationCountUpdate()">
+    🔥 Test notificationCountUpdate
   </button>
 
-  <p>Or click the external link below (Method C):</p>
+  <p>Or click the external link below:</p>
   <a href="https://apple.com" target="_blank">Open Apple.com</a>
 
   <h3>Console Log Output</h3>
